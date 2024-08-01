@@ -12,14 +12,13 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          flutter-version: 'stable'
           architecture: x64
 
       - run: flutter pub get
 
       - name: flutter Doctor
-        run: |
-          flutter doctor --verbose
+        run: flutter doctor --verbose
 
       # iOS Build Steps
       - name: Build iOS
@@ -29,18 +28,20 @@ jobs:
       - name: Prepare iOS Payload
         run: |
           mkdir -p build/ios/iphoneos/Payload
-          mv build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload
+          mv build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload/Runner.app
       - name: Zip iOS output
-        run: zip -qq -r -9 FlutterIpaExport.ipa build/ios/iphoneos/Payload
+        run: |
+          cd build/ios/iphoneos
+          zip -qq -r -9 FlutterIpaExport.ipa Payload
 
       # Android Build Steps
       - name: Build Android
         run: flutter build apk --release
 
       - name: Prepare APK for upload
-        run: |
-          mkdir -p build/app/outputs/flutter-apk
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/FlutterAppRelease.apk
+        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/FlutterAppRelease.apk
+
+      # Uploading iOS and Android binaries to release
       - name: Upload iOS binary to release
         uses: svenstaro/upload-release-action@v2
         with:
@@ -48,7 +49,7 @@ jobs:
           file: build/ios/iphoneos/FlutterIpaExport.ipa
           tag: v1.0
           overwrite: true
-          body: "This is first release"
+          body: "This is the first iOS release"
 
       - name: Upload APK to release
         uses: svenstaro/upload-release-action@v2
