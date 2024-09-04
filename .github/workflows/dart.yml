@@ -4,57 +4,38 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: 🎉 Build iOS and Android
+  build_ios:
+    name: Build Flutter (iOS 🍎)
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code 🛠️
+        uses: actions/checkout@v2
 
-      - uses: subosito/flutter-action@v2
+      - name: Set up Flutter 🐦
+        uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
-          architecture: x64
+          flutter-version: 'stable'
 
-      - run: flutter pub get
+      - name: Install Dependencies 📦
+        run: flutter pub get
 
-      - name: flutter Doctor
-        run: |
-          flutter doctor --verbose
+      - name: Build iOS App 📲
+        run: flutter build ios --release
 
-      # iOS Build Steps
-      - name: Build iOS
-        run: |
-          pod repo update
-          flutter build ios --release --no-codesign
-      - name: Prepare iOS Payload
-        run: |
-          mkdir -p build/ios/iphoneos/Payload
-          mv build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload
-      - name: Zip iOS output
-        run: zip -qq -r -9 FlutterIpaExport.ipa build/ios/iphoneos/Payload
+  build_android:
+    name: Build Flutter (Android 🤖)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code 🛠️
+        uses: actions/checkout@v2
 
-      # Android Build Steps
-      - name: Build Android
+      - name: Set up Flutter 🐦
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      - name: Install Dependencies 📦
+        run: flutter pub get
+
+      - name: Build Android App 📲
         run: flutter build apk --release
-
-      - name: Prepare APK for upload
-        run: |
-          mkdir -p build/app/outputs/flutter-apk
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/FlutterAppRelease.apk
-      - name: Upload iOS binary to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/ios/iphoneos/FlutterIpaExport.ipa
-          tag: v1.0
-          overwrite: true
-          body: "This is first release"
-
-      - name: Upload APK to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/app/outputs/flutter-apk/FlutterAppRelease.apk
-          tag: v1.0
-          overwrite: true
-          body: "This is the APK release"
