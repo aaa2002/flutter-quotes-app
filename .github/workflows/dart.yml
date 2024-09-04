@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code 🛠️
-        uses: actions/checkout@v3  # Updated to v3 to fix Node.js deprecation warnings
+        uses: actions/checkout@v4  # Updated to v3 to fix Node.js deprecation warnings
 
       - name: Set up Flutter 🐦
         uses: subosito/flutter-action@v2
