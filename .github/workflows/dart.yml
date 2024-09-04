@@ -9,12 +9,12 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout Code 🛠️
-        uses: actions/checkout@v4  # Updated to v3 to fix Node.js deprecation warnings
+        uses: actions/checkout@v3
 
       - name: Set up Flutter 🐦
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.7.0' # Set a specific stable Flutter version
 
       - name: Install Dependencies 📦
         run: flutter pub get
@@ -22,20 +22,34 @@ jobs:
       - name: Build iOS App 📲
         run: flutter build ios --release
 
+      - name: Upload Build Artifacts 📁
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-build
+          path: build/ios/iphoneos/*.ipa # Adjust based on your output
+
   build_android:
     name: Build Flutter (Android 🤖)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code 🛠️
-        uses: actions/checkout@v4  # Updated to v3 to fix Node.js deprecation warnings
+        uses: actions/checkout@v3
 
       - name: Set up Flutter 🐦
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.7.0' # Set a specific stable Flutter version
 
       - name: Install Dependencies 📦
         run: flutter pub get
 
       - name: Build Android App 📲
         run: flutter build apk --release
+
+      - name: Upload Build Artifacts 📁
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-build
+          path: build/app/outputs/flutter-apk/app-release.apk # Adjust based on your output
