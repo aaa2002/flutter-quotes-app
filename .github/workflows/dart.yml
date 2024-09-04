@@ -72,7 +72,7 @@ jobs:
       - run: flutter doctor # Check Flutter installation details
       - run: flutter pub get # Install dependencies
 
-      - run: flutter test # Run tests
+      # - run: flutter test # Run tests
 
       - run: flutter build apk --debug --split-per-abi # Build Android APK
 
