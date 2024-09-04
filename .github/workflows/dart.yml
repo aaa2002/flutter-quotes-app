@@ -1,0 +1,60 @@
+name: mobile-build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: 🎉 Build iOS and Android
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          architecture: x64
+
+      - run: flutter pub get
+
+      - name: flutter Doctor
+        run: |
+          flutter doctor --verbose
+
+      # iOS Build Steps
+      - name: Build iOS
+        run: |
+          pod repo update
+          flutter build ios --release --no-codesign
+      - name: Prepare iOS Payload
+        run: |
+          mkdir -p build/ios/iphoneos/Payload
+          mv build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload
+      - name: Zip iOS output
+        run: zip -qq -r -9 FlutterIpaExport.ipa build/ios/iphoneos/Payload
+
+      # Android Build Steps
+      - name: Build Android
+        run: flutter build apk --release
+
+      - name: Prepare APK for upload
+        run: |
+          mkdir -p build/app/outputs/flutter-apk
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/FlutterAppRelease.apk
+      - name: Upload iOS binary to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/ios/iphoneos/FlutterIpaExport.ipa
+          tag: v1.0
+          overwrite: true
+          body: "This is first release"
+
+      - name: Upload APK to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/app/outputs/flutter-apk/FlutterAppRelease.apk
+          tag: v1.0
+          overwrite: true
+          body: "This is the APK release"
