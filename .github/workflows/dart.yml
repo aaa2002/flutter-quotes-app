@@ -58,16 +58,16 @@ jobs:
     name: Build & Release
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3 # Updated to latest version
+      - uses: actions/checkout@v3 # Latest version of checkout action
 
-      - uses: actions/setup-java@v3 # Updated to use Java 17 (LTS)
+      - uses: actions/setup-java@v3 # Use Java 17 (LTS)
         with:
           distribution: "temurin"
           java-version: "17.x"
 
-      - uses: subosito/flutter-action@v2 # Updated to specify a Flutter version directly
+      - uses: subosito/flutter-action@v2 # Updated to specify a compatible Flutter version
         with:
-          flutter-version: "3.7.0" # Explicitly specify a Flutter version that is compatible with macOS and arm64
+          flutter-version: "3.13.0" # Use Flutter version that includes Dart SDK >=3.4.4
 
       - run: flutter doctor # Check Flutter installation details
       - run: flutter pub get # Install dependencies
