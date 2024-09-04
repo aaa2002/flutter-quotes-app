@@ -4,7 +4,7 @@ import 'package:flutter_test_project/quote.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -37,26 +37,37 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quotient'),
-        backgroundColor: Colors.deepOrange[200],
-        //app logo as png
-        leading: Image.asset('assets/logo.png'),
+        backgroundColor: Color.fromRGBO(186, 108, 59, 1),
+        surfaceTintColor: Colors.transparent,
+        leading: null,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Quote '),
+            Image.asset(
+              'assets/logo.png',
+              height: 42.0,
+            ),
+            const Text(' Knot'),
+          ],
+        ),
       ),
       body: FutureBuilder<List<Quote>>(
         future: _quotesFuture,
         builder: (BuildContext context, AsyncSnapshot<List<Quote>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             return SingleChildScrollView(
               child: Column(
                 children: snapshot.data!.map((quote) {
-                  return Container(
+                  return SizedBox(
                     width: double.infinity,
                     child: Card(
-                      margin: EdgeInsets.all(16),
+                      margin: const EdgeInsets.all(16),
+                      color: Color.fromRGBO(217,217,217, 1),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
@@ -64,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Text(
                               quote.text,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.black,
                               ),
@@ -86,9 +97,9 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-            return Center(child: Text('No quotes added yet.'));
+            return const Center(child: Text('No quotes added yet.'));
           } else {
-            return Center(child: Text('Something went wrong.'));
+            return const Center(child: Text('Something went wrong.'));
           }
         },
       ),
@@ -97,14 +108,14 @@ class _HomePageState extends State<HomePage> {
         onPressed: () async {
           final result = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddNewQuoteView()),
+            MaterialPageRoute(builder: (context) => const AddNewQuoteView()),
           );
           if (result == true) {
             _refreshQuotes();
           }
         },
+        backgroundColor: Color.fromRGBO(186, 108, 59, 1),
         child: Icon(Icons.add),
-        backgroundColor: Colors.deepOrange[200],
       ),
     );
   }
