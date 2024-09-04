@@ -62,12 +62,12 @@ jobs:
 
       - uses: actions/setup-java@v3 # Updated to use Java 17 (LTS)
         with:
-          distribution: "temurin" # Specify the Java distribution
-          java-version: "17.x" # Use Java 17 (LTS)
+          distribution: "temurin"
+          java-version: "17.x"
 
-      - uses: subosito/flutter-action@v2 # Updated to v2 for better compatibility
+      - uses: subosito/flutter-action@v2 # Updated to specify a Flutter version directly
         with:
-          flutter-version: "stable" # Using the latest stable version of Flutter
+          flutter-version: "3.7.0" # Explicitly specify a Flutter version that is compatible with macOS and arm64
 
       - run: flutter doctor # Check Flutter installation details
       - run: flutter pub get # Install dependencies
