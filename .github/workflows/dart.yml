@@ -60,8 +60,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3 # Updated to latest version
 
-      - uses: actions/setup-java@v3 # Updated to latest version
+      - uses: actions/setup-java@v3 # Updated to v3 and added distribution
         with:
+          distribution: "temurin" # Specify the Java distribution (e.g., temurin, zulu, adopt)
           java-version: "12.x"
 
       - uses: subosito/flutter-action@v2 # Updated to v2 for better compatibility
