@@ -83,7 +83,7 @@ jobs:
           cd Payload
           ln -s ../Runner.app
           cd ..
-          zip -r app.ipa Payload  # Package iOS app into an .ipa file
+          zip -r app.ipa Payload  # Package iOS app into an .ipa file 
 
       - name: Push to Releases
         uses: ncipollo/release-action@v1

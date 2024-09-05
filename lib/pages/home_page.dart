@@ -33,11 +33,46 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> _deleteQuote(Quote quote) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> quotes = prefs.getStringList('quotes') ?? [];
+    quotes.remove(quote.toJsonString());
+    await prefs.setStringList('quotes', quotes);
+    _refreshQuotes();
+  }
+
+  Future<void> _showDeleteConfirmationDialog(Quote quote) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Quote'),
+          content: const Text('Are you sure you want to delete this quote?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+            ),
+            TextButton(
+              child: const Text('Delete'),
+              onPressed: () {
+                _deleteQuote(quote);
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(186, 108, 59, 1),
+        backgroundColor: const Color.fromRGBO(186, 108, 59, 1),
         surfaceTintColor: Colors.transparent,
         leading: null,
         title: Row(
@@ -67,18 +102,33 @@ class _HomePageState extends State<HomePage> {
                     width: double.infinity,
                     child: Card(
                       margin: const EdgeInsets.all(16),
-                      color: Color.fromRGBO(217,217,217, 1),
+                      color: const Color.fromRGBO(217, 217, 217, 1),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              quote.text,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.black,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    quote.text,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      size: 20,
+                                      color: Colors.black),
+                                  onPressed: () {
+                                    _showDeleteConfirmationDialog(quote);
+                                  },
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 5),
                             Text(
@@ -114,8 +164,8 @@ class _HomePageState extends State<HomePage> {
             _refreshQuotes();
           }
         },
-        backgroundColor: Color.fromRGBO(186, 108, 59, 1),
-        child: Icon(Icons.add),
+        backgroundColor: const Color.fromRGBO(186, 108, 59, 1),
+        child: const Icon(Icons.add),
       ),
     );
   }
