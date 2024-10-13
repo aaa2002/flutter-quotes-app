@@ -1,6 +1,7 @@
 # flutter_test_project
 
 ## Designed by BMSS Design
+**Contact:** [edidesign2002@gmail.com](mailto:edidesign2002@gmail.com)
 
 ## Getting Started
 
